@@ -1,0 +1,5 @@
+shirt, blue
+pants, red
+shoes, green
+poophat, poop
+hat, brown
