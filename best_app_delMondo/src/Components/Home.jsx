@@ -1,5 +1,5 @@
 
-import character from './Character.png'
+import character from '../Img/Character.png'
 
 const Home = () => {
 
