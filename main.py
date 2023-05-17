@@ -13,20 +13,23 @@ def encode_fashion_store_problem(garments):
             color_vars[color] = Bool(color)
 
     # Add constraints
-    for g1, c1 in garments:
-        for g2, c2 in garments:
-            # Constraint: Garments with the same type cannot be together
-            # if g1 != g2:
-            #     solver.add(Or(Not(garment_vars[g1]), Not(garment_vars[g2])))
+    # for g1, c1 in garments:
+    #     for g2, c2 in garments:
+    #         # Constraint: Garments with the same type cannot be together
+    #         if g1 != g2:
+    #             solver.add(Or(Not(garment_vars[g1]), Not(garment_vars[g2])))
 
-            # Constraint: Garments with the same color cannot be together
-            if c1 == c2 and g1 != g2:
-                solver.add(Or(Not(garment_vars[g1]), Not(garment_vars[g2])))
+    #         # Constraint: Garments with the same color cannot be together
+    #         if c1 == c2 and g1 != g2:
+    #             solver.add(Or(Not(garment_vars[g1]), Not(garment_vars[g2])))
+    # print("Garment Variables: ", garment_vars)
+    # print("Color Variables: ", color_vars)
 
     # Constraint: At least one garment must be selected
-    # solver.add(Or([garment_vars[garment] for garment in garment_vars]))
+    solver.add(Or([garment_vars[garment] for garment in garment_vars]))
     # print(solver)
 
+    print(solver.assertions)
     # Check if the problem is satisfiable
     if solver.check() == sat:
         # Get the satisfying model
@@ -35,6 +38,9 @@ def encode_fashion_store_problem(garments):
                                for color, var in color_vars.items() if is_true(model[var])]
         return satisfying_garments
     else:
+        #print unsatisfiable cases
+        print("UNSATISFIABLE")
+        print(solver.model())
         return None
 
 # Read the input from a text file
