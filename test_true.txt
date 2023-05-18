@@ -2,3 +2,4 @@ tshirt, white
 pants, black
 hat, white
 shoes, black
+socks, white

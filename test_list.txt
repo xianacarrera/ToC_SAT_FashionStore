@@ -1,4 +1,5 @@
 tshirt, blue
-pants, red
-shoes, green
-hat, violet
+pants, blue
+shoes, blue
+socks, blue
+hat, white

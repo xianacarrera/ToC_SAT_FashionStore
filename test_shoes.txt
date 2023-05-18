@@ -1,1 +1,2 @@
 shoes, black
+socks, black

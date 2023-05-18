@@ -1,31 +1,8 @@
 from z3 import *
+from fashion_options import Clothes, Colors
 
 
-Clothes = {
-    'tshirt' : Bool('tshirt'),
-    'pants' : Bool('pants'),
-    'hat' : Bool('hat'),
-    'shoes': Bool('shoes'),
-    'socks': Bool('socks'),
-    'dress': Bool('dress'),
-    'skirt': Bool('skirt'),
-    'sandals': Bool('sandals')
-}
-
-Colors = {
-    'red' : Bool('red'),
-    'blue' : Bool('blue'),
-    'green' : Bool('green'),
-    'violet' : Bool('violet'),
-    'white': Bool('white'),
-    'black': Bool('black'),
-    'pink': Bool('pink')
-}
-
-
-def add_constraints(solver):
-    # Constraint: At least one garment must be selected
-    #solver.add(Or([garment_vars[garment] for garment in garment_vars]))
+def add_fixed_constraints(solver):
 
     # ---------------------------------------- GARMENT CONTRAINTS ----------------------------------------
    
@@ -62,95 +39,135 @@ def add_constraints(solver):
     # Constraint: No monocolor outfit
     solver.add(AtLeast(*[Colors[color] for color in Colors], 2))
     
+    
 
+def add_input_constraints(solver, garment_vars, color_vars):
+    clothes_copy = Clothes.copy()
+    colors_copy = Colors.copy()
 
+    chosen_garments = []
+    chosen_colors = []
 
-def encode_fashion_store_problem(garments):
+    for garment in garment_vars:
+        chosen_garments.append(garment_vars[garment])
+        clothes_copy.pop(garment)
+    
+    for color in color_vars:
+        chosen_colors.append(color_vars[color])
+        colors_copy.pop(color)
+
+    # All the garments chosen by the user must be present in the solution
+    solver.add(And(*chosen_garments))
+    # All the colors chosen by the user must be present in the solution
+    solver.add(And(*chosen_colors))
+
+    # None of the garments not chosen by the user can be present in the solution
+    solver.add(And(*[Not(clothes_copy[garment]) for garment in clothes_copy]))
+    # None of the colors not chosen by the user can be present in the solution
+    solver.add(And(*[Not(colors_copy[color]) for color in colors_copy]))
+
+def get_possible_solution(solver):
+    if solver.check():
+        possible_sol = solver.model()
+        print("\n\nPossible solution: ")
+        for d in possible_sol.decls():
+            print("%s = %s" % (d.name(), possible_sol[d]))
+
+def encode_fashion_store_problem(garments, colors):
     # Create a Z3 solver
     solver = Solver()
-    # solver.add(Bool('x'))
-    # print(solver.check(), solver.model())
-    # Define the variables
+    # Dictionaries for the input variables
     garment_vars = {}
     color_vars = {}
     
-
-    for garment, color in garments:
-        if garment in garment_vars:
-            print("Repeated garment: ", garment)
-            exit(1)
+    # Transform the user garments and colors into Z3 variables
+    for garment in garments:
         garment_vars[garment] = Bool(garment)
+
+    for color in colors:
         if color not in color_vars:
             color_vars[color] = Bool(color)
 
+    # Add the contraints fixed by the store
+    add_fixed_constraints(solver)
 
-    add_constraints(solver)
+    # Get a possible solution with the fixed constraints
+    get_possible_solution(solver)
 
-    print(solver.assertions)
+    # Transform the user input into Z3 constraints
+    add_input_constraints(solver, garment_vars, color_vars)
+
+    print("\n\nContraints:")
+    for c in solver.assertions():
+        print(c)
+
     # Check if the problem is satisfiable
-    if solver.check() == sat:
+    result = solver.check()
+    print("\n\nStatistics:")
+    print("Result: ", result)
+    for k, v in solver.statistics():       # Performance statistics
+        print("%s : %s" % (k, v))
+
+    if result == sat:
         # Get the satisfying model
         model = solver.model()
-        print("model", model);
-        
-        # get satisfying garnments if any
-        # true_items = [d() for d in model.decls() if is_true(model[d])]
-        # satisfying_garments = []
-        #print("true items ",true_items)
-
-        # for i in range(len(garments)):
-        #     if Bool(garments[i][0]) in true_items:
-        #         satisfying_garments.append(garments[i])
-        
-        # return satisfying_garments
+        print("model", model)
         return True 
-    else:
-        #print unsatisfiable cases
-        # print("UNSATISFIABLE")
-        # print(solver.model())
+    else:                            # unsat or unknown (failed to solve)
         return False
 
-def check_input(garments):
-    for garment, color in garments:
-        if garment not in Clothes:
-            print(f"Invalid garment: {garment}")
-            return False
-        if color not in Colors:
-            print(f"Invalid color: {color}")
-            return False
-    return True
+
+def check_input(garment, color, garments):
+    # TODO: integrate this with the front end
+    if garment not in Clothes:          # Not one of the garments the store sells
+        print(f"Invalid garment: {garment}")
+        exit(1)
+    if color not in Colors:             # Not one of the colors the store sells
+        print(f"Invalid color: {color}")
+        exit(1)
+    if garment in garments:             # Repeated garment
+        print(f"Repeated garment: {garment}")
+        exit(1)
 
 
 # Read the input from a text file
 def read_input_from_file(file_path):
     garments = []
+    colors = []
     with open(file_path, 'r') as file:
         for line in file:
             line = line.strip()
             if line:
                 splitted_line = line.split(',')
-                if len(splitted_line) != 2:
+
+                # Each line must be of the format "garment, color"
+                if len(splitted_line) != 2:   
                     # TODO: integrate this with the front end
-                    print(line)
+                    print("Invalid input line: ", line)
                     exit(1)
+
                 garment, color = splitted_line
-                garments.append((garment.strip(), color.strip()))
+                garment = garment.strip()
+                color = color.strip()
+
+                check_input(garment, color, garments)
+
+                garments.append(garment)
+                colors.append(color)
     print(garments)
-    return garments
+    print(colors)
+    return garments, colors
 
-# TESTING
-file_path = "test_list.txt"
-garments = read_input_from_file(file_path)
-if not check_input(garments):
-    # TODO: integrate this with the front end
-    exit(1)
-solution = encode_fashion_store_problem(garments)
+if __name__ == "__main__":
+    file_path = "test_list.txt"
+    garments, colors = read_input_from_file(file_path)
+    solution = encode_fashion_store_problem(garments, colors)
 
-if solution:
-    print (solution)
-    print("Satisfiable:")
-    for garment, color in garments:
-        print(f"Garment: {garment}, Color: {color}")
-else:
-    print("UNSATISFIABLE")
+    print("\n\n")
+    if solution:
+        print("SATISFIABLE:")
+        for garment, color in zip(garments, colors):
+            print(f"Garment: {garment}, Color: {color}")
+    else:
+        print("UNSATISFIABLE")
 
