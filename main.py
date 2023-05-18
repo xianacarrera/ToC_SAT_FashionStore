@@ -3,7 +3,8 @@ from z3 import *
 def encode_fashion_store_problem(garments):
     # Create a Z3 solver
     solver = Solver()
-
+    # solver.add(Bool('x'))
+    # print(solver.check(), solver.model())
     # Define the variables
     garment_vars = {}
     color_vars = {}
@@ -11,6 +12,7 @@ def encode_fashion_store_problem(garments):
         garment_vars[garment] = Bool(garment)
         if color not in color_vars:
             color_vars[color] = Bool(color)
+
 
     # Add constraints
     # for g1, c1 in garments:
@@ -27,16 +29,26 @@ def encode_fashion_store_problem(garments):
 
     # Constraint: At least one garment must be selected
     solver.add(Or([garment_vars[garment] for garment in garment_vars]))
-    # print(solver)
 
     print(solver.assertions)
     # Check if the problem is satisfiable
     if solver.check() == sat:
         # Get the satisfying model
         model = solver.model()
-        satisfying_garments = [(garment, color) for garment, var in garment_vars.items() if is_true(model[var])
-                               for color, var in color_vars.items() if is_true(model[var])]
+        print("model", model);
+        
+        true_items = [d() for d in model.decls() if is_true(model[d])]
+        satisfying_garments = []
+        print("true items ",true_items)
+
+        for i in range(len(garments)):
+            if Bool(garments[i][0]) in true_items:
+                satisfying_garments.append(garments[i])
+        
         return satisfying_garments
+        # satisfying_garments = [(garment, color) for garment, var in garment_vars.items() if is_true(model[var])
+        #                        for color, var in color_vars.items() if is_true(model[var])]
+    #     return satisfying_garments
     else:
         #print unsatisfiable cases
         print("UNSATISFIABLE")
@@ -52,6 +64,7 @@ def read_input_from_file(file_path):
             if line:
                 garment, color = line.split(',')
                 garments.append((garment.strip(), color.strip()))
+    print(garments)
     return garments
 
 # TESTING
@@ -60,8 +73,10 @@ garments = read_input_from_file(file_path)
 solution = encode_fashion_store_problem(garments)
 
 if solution:
+    print (solution)
     print("Satisfiable:")
     for garment, color in solution:
         print(f"Garment: {garment}, Color: {color}")
 else:
     print("UNSATISFIABLE")
+
