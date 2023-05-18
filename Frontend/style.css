@@ -1,0 +1,10 @@
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.full-height-image {
+    height: 70;
+    width: auto;
+    object-fit: cover;
+}
