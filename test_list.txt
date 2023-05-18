@@ -1,4 +1,4 @@
-shirt, blue
+tshirt, blue
 pants, red
 shoes, green
-hat, purple
+hat, violet
