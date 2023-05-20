@@ -173,25 +173,47 @@ function shop(){
     }
 }
 
-function shop_show(){
-    if(old_type != undefined){
-        for (var i = 0; i < All_color.length; i++) {
-            doc_tmp = document.getElementById("Img/" + old_type + "_" + All_color[i] + ".png")
-            doc_tmp.style.display = "none";
-        }
+function shop_show() {
+    if (old_type != undefined) {
+      for (var i = 0; i < All_color.length; i++) {
+        doc_tmp = document.getElementById("Img/" + old_type + "_" + All_color[i] + ".png")
+        doc_tmp.style.display = "none";
+      }
     }
-    old_type = undefined
+    old_type = undefined;
     var clothesDiv = document.getElementById("Clothes");
-    for(let i = 0; i < All_Shop.length; ++i){
-        var newDiv = document.createElement("div");
-            newDiv.id = "SHOP_" + All_Shop[i] ;
-            var img = document.createElement("img");
-            img.src = All_Shop[i];
-            newDiv.appendChild(img);
-            clothesDiv.appendChild(newDiv);
-        }
-}
-
+    for (let i = 0; i < All_Shop.length; ++i) {
+      var newDiv = document.createElement("div");
+      newDiv.style.position = "relative";
+      newDiv.style.display = "inline-block"; // Per mantenere le dimensioni del div basate sul contenuto
+  
+      newDiv.id = "SHOP_" + All_Shop[i];
+  
+      var img = document.createElement("img");
+      img.src = All_Shop[i];
+      newDiv.appendChild(img);
+  
+      if ('./Img/Vuoto.png' !== All_Shop[i]) {
+        var svgSpan = document.createElement("span");
+        svgSpan.innerHTML = '<svg style="color: rgb(221, 170, 152); position: absolute; top: 0; right: 0;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16"> <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" fill="#ddaa98"></path> </svg>';
+  
+        svgSpan.addEventListener("click", (function (index, image, svg_a,div_parent) {
+          return function () {
+            All_Shop[i] = './Img/Vuoto.png';
+            image.src = './Img/Vuoto.png';
+            svgSpan.remove();
+            div_parent.id = "SHOP_" + All_Shop[i];
+          };
+        })(i, img,svgSpan,newDiv));
+  
+        newDiv.appendChild(svgSpan);
+      }
+  
+      clothesDiv.appendChild(newDiv);
+    }
+  }
+  
+  
 
 function close_ssop(){
     for(let i = 0; i < All_Shop.length; ++i){
