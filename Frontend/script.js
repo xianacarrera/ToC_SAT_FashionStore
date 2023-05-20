@@ -2,7 +2,7 @@ var All_clothes = ["Cappello","Maglietta","Completo","Gonna","Calzoni","Scarpe",
 var All_color = ["Blu","Bianco","Nero","Rosso","Rosa","Verde","Viola"]
 var All_Shop = [ './Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png']
 var old_type = undefined
-
+var open_shop = false
 
 function dress_char(){
     console.log()
@@ -20,6 +20,10 @@ function myFunction(obj) {
 }
 
 function openDress(type){
+    if(open_shop){
+        close_ssop()
+        open_shop = false
+    }
 
     if(old_type != undefined){
         for (var i = 0; i < All_color.length; i++) {
@@ -123,6 +127,9 @@ function openDressStart2() {
           if(j >= 3){
               img.style = "margin-top:-30px;"
           }
+          if(j == 4){
+            img.src = "Img/" + type + "_" + All_color[i] + "-trimmy.png"
+          }
 
           if(j >= 5){
               img.style = "margin-top:-70px;"
@@ -155,6 +162,78 @@ function dress_character(){
         img_tmp.src = All_Shop[i]
     }
 }
+
+function shop(){
+    if(open_shop){
+        close_ssop()
+        open_shop = false
+    }else{
+        shop_show()
+        open_shop = true
+    }
+}
+
+function shop_show(){
+    if(old_type != undefined){
+        for (var i = 0; i < All_color.length; i++) {
+            doc_tmp = document.getElementById("Img/" + old_type + "_" + All_color[i] + ".png")
+            doc_tmp.style.display = "none";
+        }
+    }
+    old_type = undefined
+    var clothesDiv = document.getElementById("Clothes");
+    for(let i = 0; i < All_Shop.length; ++i){
+        var newDiv = document.createElement("div");
+            newDiv.id = "SHOP_" + All_Shop[i] ;
+            var img = document.createElement("img");
+            img.src = All_Shop[i];
+            newDiv.appendChild(img);
+            clothesDiv.appendChild(newDiv);
+        }
+}
+
+
+function close_ssop(){
+    for(let i = 0; i < All_Shop.length; ++i){
+        var elementToRemove = document.getElementById("SHOP_" + All_Shop[i]);
+        elementToRemove.parentNode.removeChild(elementToRemove);
+    }
+}
+
+function remove_shop(){
+
+    if(open_shop){
+        close_ssop()
+        open_shop = false
+    }
+
+    for(let i = 0; i < All_Shop.length; ++i){
+        All_Shop[i] = './Img/Vuoto.png';
+    }
+    dress_character()
+}
+
+function writeTxt(content) {
+    const url = 'http://localhost:3000/writefile';
+  
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: content })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Errore durante la richiesta');
+        }
+        console.log('File scritto correttamente.');
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }  
+
 
 unloadScrollBars()
 openDressStart2()
