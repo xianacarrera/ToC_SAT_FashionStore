@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -10,14 +10,13 @@ def write_file():
         with open('file.txt', 'w') as file:
             file.truncate(0)
             file.write(content)
-        return '', 200
+        return jsonify({'message': 'CIAO'}), 200
     except Exception as e:
         print(str(e))
-        return 'Error writing file', 500
+        return jsonify({'message': 'Error writing file'}), 500
 
 if __name__ == '__main__':
     app.run(port=3000)
-
 
 
 #Linux disable cors

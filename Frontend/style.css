@@ -6,3 +6,21 @@
     object-fit: cover;
 }
 
+
+.trasparente-al-hover:hover {
+    opacity: 0.7;
+  }
+
+
+.trasparente-al-hover:hover {
+    opacity: 0.5;
+}
+
+.fade-in {
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-in:hover {
+    opacity: 1;
+    background-color: #f0d4ca
+  }
