@@ -1,5 +1,4 @@
 
-
 const express = require('express');
 const fs = require('fs');
 
@@ -9,18 +8,26 @@ app.use(express.json());
 app.post('/writefile', function(req, res) {
   const content = req.body.content;
 
-  fs.writeFile('file.txt', content, function(err) {
+  fs.truncate('file.txt', 0, function(err) {
     if (err) {
       console.error(err);
-      res.status(500).send('Errore durante la scrittura del file.');
+      res.status(500).send('Error truncating file.');
       return;
     }
-    res.sendStatus(200);
+
+    fs.writeFile('file.txt', content, function(err) {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error writing file.');
+        return;
+      }
+      res.sendStatus(200);
+    });
   });
 });
 
 app.listen(3000, function() {
-  console.log('Server avviato sulla porta 3000');
+  console.log('Server running on port 3000');
 });
 
 

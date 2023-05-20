@@ -4,6 +4,25 @@ var All_Shop = [ './Img/Vuoto.png','./Img/Vuoto.png','./Img/Vuoto.png','./Img/Vu
 var old_type = undefined
 var open_shop = false
 
+var DummyTranslator = {
+    "Cappello": "hat",
+    "Maglietta": "tshirt",
+    "Completo": "dress",
+    "Gonna": "skirt",
+    "Calzoni": "pants",
+    "Scarpe": "shoes",
+    "Sandali": "sandals",
+    "Calzini": "socks",
+    "Blu": "blue",
+    "Bianco": "white",
+    "Nero": "black",
+    "Rosso": "red",
+    "Rosa": "pink",
+    "Verde": "green",
+    "Viola": "purple"
+  };
+  
+
 function dress_char(){
     console.log()
     for(let i = 1; i < All_clothes.length; ++i){
@@ -235,6 +254,33 @@ function remove_shop(){
     dress_character()
 }
 
+
+
+function parseImageString(imageString) {
+    if(imageString === './Img/Vuoto.png' ){
+        return false
+    }
+    var startIndex = imageString.lastIndexOf("/") + 1;
+    var endIndex = imageString.lastIndexOf(".");
+    var substring = imageString.substring(startIndex, endIndex);
+    var parts = substring.split("_");
+
+    return DummyTranslator[parts[0]] +  ", " + DummyTranslator[parts[1]] + "\n";
+
+  }
+
+
+function gettxtContent(){
+    res = ""
+    for(let i = 0; i < All_Shop.length; ++i){
+        let tmp_str = parseImageString(All_Shop[i]);
+        if(tmp_str){
+            res += tmp_str;
+        }
+    }
+    return res.slice(0, -1);
+}
+
 function writeTxt(content) {
     const url = 'http://localhost:3000/writefile';
   
@@ -247,15 +293,14 @@ function writeTxt(content) {
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Errore durante la richiesta');
+          throw new Error('BO broken something and no write ');
         }
-        console.log('File scritto correttamente.');
+        console.log('Write File Stonks');
       })
       .catch(error => {
         console.error(error);
       });
   }  
-
 
 unloadScrollBars()
 openDressStart2()
