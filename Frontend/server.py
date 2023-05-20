@@ -20,7 +20,11 @@ if __name__ == '__main__':
 
 
 
+#Linux disable cors
+#google-chrome --disable-web-security
 
-
+#Mac disable cors
 #open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+
+#Run server
 #python3 server.py 

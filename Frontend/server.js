@@ -31,5 +31,11 @@ app.listen(3000, function() {
 });
 
 
+//Linux disable cors
+//google-chrome --disable-web-security
+
+//Mac disable cors
 //open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+
+//Run server
 //node server.js
