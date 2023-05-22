@@ -38,6 +38,11 @@ def add_fixed_constraints(solver):
 
     # Constraint: No monocolor outfit
     solver.add(AtLeast(*[Colors[color] for color in Colors], 2))
+
+    # ---------------------------- GARMENTS AND COLORS COMBINATIONS CONTRAINTS --------------------------
+
+    # Constraint: No violet hats with pink dresses
+    solver.add(Not(And(Clothes['hat'], Colors['violet'], Clothes['dress'], Colors['pink'])))
     
     
 
