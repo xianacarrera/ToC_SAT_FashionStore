@@ -41,7 +41,7 @@ def add_fixed_constraints(solver):
 
     # ---------------------------- GARMENTS AND COLORS COMBINATIONS CONTRAINTS --------------------------
 
-    # Constraint: No violet hats with pink dresses
+    # Constraint: No violet hats with pink dresses, and no pink hats with violet dresses
     solver.add(Not(And(Clothes['hat'], Colors['violet'], Clothes['dress'], Colors['pink'])))
     
     
@@ -162,21 +162,6 @@ def read_input_from_file(file_path):
     print(garments)
     print(colors)
     return garments, colors
-
-def check_validity(file_path):
-    file_path = file_path
-    garments, colors = read_input_from_file(file_path)
-    solution = encode_fashion_store_problem(garments, colors)
-
-    print("\n\n")
-    if solution:
-        print("SATISFIABLE:")
-        for garment, color in zip(garments, colors):
-            print(f"Garment: {garment}, Color: {color}")
-        return ("SATISFIABLE")
-    else:
-        print("UNSATISFIABLE")
-        return ("UNSATISFIABLE")
 
 if __name__ == "__main__":
     file_path = "test_list.txt"
