@@ -1,1 +1,4 @@
-shoes, pink
+hat, red
+dress, black
+shoes, black
+socks, black

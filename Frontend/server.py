@@ -1,4 +1,8 @@
 from flask import Flask, request, jsonify
+import sys
+sys.path.append('../')
+import main
+
 
 app = Flask(__name__)
 
@@ -10,7 +14,10 @@ def write_file():
         with open('file.txt', 'w') as file:
             file.truncate(0)
             file.write(content)
-        return jsonify({'message': 'CIAO'}), 200
+        solution = main.check_validity('file.txt')
+        return jsonify({'message': solution}), 200
+    
+
     except Exception as e:
         print(str(e))
         return jsonify({'message': 'Error writing file'}), 500

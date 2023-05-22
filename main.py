@@ -158,6 +158,21 @@ def read_input_from_file(file_path):
     print(colors)
     return garments, colors
 
+def check_validity(file_path):
+    file_path = file_path
+    garments, colors = read_input_from_file(file_path)
+    solution = encode_fashion_store_problem(garments, colors)
+
+    print("\n\n")
+    if solution:
+        print("SATISFIABLE:")
+        for garment, color in zip(garments, colors):
+            print(f"Garment: {garment}, Color: {color}")
+        return ("SATISFIABLE")
+    else:
+        print("UNSATISFIABLE")
+        return ("UNSATISFIABLE")
+
 if __name__ == "__main__":
     file_path = "test_list.txt"
     garments, colors = read_input_from_file(file_path)
