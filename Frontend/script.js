@@ -70,6 +70,8 @@ function openDress(type) {
 
 function addCloth(j, i) {
     All_Shop[j] = "Img/" + All_clothes[j] + "_" + All_color[i] + ".png";
+    current_layer = document.getElementById(j+1);
+    current_layer.src = All_Shop[j]
 }
 
 
@@ -169,6 +171,8 @@ function shop_show() {
                 svgSpan.style = "cursor: pointer;"
                 svgSpan.addEventListener("click", (function (index, image, svg_a, div_parent) {
                     return function () {
+                        layer_tmp = document.getElementById(index + 1)
+                        layer_tmp.src = './Img/Vuoto.png'
                         All_Shop[i] = './Img/Vuoto.png';
                         image.src = './Img/Vuoto.png';
                         svg_a.remove();
