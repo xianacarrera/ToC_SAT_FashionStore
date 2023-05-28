@@ -1,0 +1,4 @@
+tshirt, black
+skirt, black
+shoes, black
+socks, white

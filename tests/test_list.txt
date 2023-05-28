@@ -1,0 +1,5 @@
+tshirt, blue
+pants, blue
+shoes, blue
+socks, blue
+hat, white

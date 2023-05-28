@@ -1,13 +1,18 @@
 from z3 import *
 from fashion_options import Clothes, Colors
 
+options = {
+    "verbose": True,
+    "possible_solution": True,
+    "statistics": True
+}
 
 def add_fixed_constraints(solver):
 
     # ---------------------------------------- GARMENT CONTRAINTS ----------------------------------------
    
     # Constraint: Pairs of garments that cannot be together
-    incompatible_garments = [["sandals", "socks"], ["skirt", "pants"], ["dress", "tshirt"]]
+    incompatible_garments = [["sandals", "socks"], ["skirt", "pants"], ["dress", "tshirt"], ["sandals", "shoes"]]
     for pair in incompatible_garments:
         solver.add(Or(Not(Clothes[pair[0]]), Not(Clothes[pair[1]])))
     
@@ -78,7 +83,7 @@ def get_possible_solution(solver):
         for d in possible_sol.decls():
             print("%s = %s" % (d.name(), possible_sol[d]))
 
-def encode_fashion_store_problem(garments, colors):
+def encode_fashion_store_problem(garments, colors, options = {}):
     # Create a Z3 solver
     solver = Solver()
     # Dictionaries for the input variables
@@ -97,26 +102,33 @@ def encode_fashion_store_problem(garments, colors):
     add_fixed_constraints(solver)
 
     # Get a possible solution with the fixed constraints
-    get_possible_solution(solver)
+    if options.get("possible_solution", False):
+        get_possible_solution(solver)
 
     # Transform the user input into Z3 constraints
     add_input_constraints(solver, garment_vars, color_vars)
 
-    print("\n\nContraints:")
-    for c in solver.assertions():
-        print(c)
-
     # Check if the problem is satisfiable
     result = solver.check()
-    print("\n\nStatistics:")
-    print("Result: ", result)
-    for k, v in solver.statistics():       # Performance statistics
-        print("%s : %s" % (k, v))
+
+    if options.get("verbose", False):
+        # Print the contraints and the model if the problem is satisfiable
+        print("\n\nContraints:")
+        for c in solver.assertions():
+            print(c)
+
+        print("Result: ", result)
+    
+    if options.get("statistics", False):
+        print("\n\nStatistics:")
+        for k, v in solver.statistics():       # Performance statistics
+            print("%s : %s" % (k, v))
 
     if result == sat:
         # Get the satisfying model
         model = solver.model()
-        print("model", model)
+        if options.get("verbose", False):
+            print("model", model)
         return True 
     else:                            # unsat or unknown (failed to solve)
         return False
@@ -159,20 +171,24 @@ def read_input_from_file(file_path):
 
                 garments.append(garment)
                 colors.append(color)
-    print(garments)
-    print(colors)
     return garments, colors
 
-if __name__ == "__main__":
-    file_path = "test_list.txt"
+
+def run(file_path = "tests/test_list.txt", options = options):
     garments, colors = read_input_from_file(file_path)
-    solution = encode_fashion_store_problem(garments, colors)
+    solution = encode_fashion_store_problem(garments, colors, options)
 
     print("\n\n")
     if solution:
         print("SATISFIABLE:")
-        for garment, color in zip(garments, colors):
-            print(f"Garment: {garment}, Color: {color}")
+        if options.get("verbose", False):
+            for garment, color in zip(garments, colors):
+                print(f"Garment: {garment}, Color: {color}")
+        return True
     else:
         print("UNSATISFIABLE")
+    return False
+
+if __name__ == "__main__":
+    run()
 

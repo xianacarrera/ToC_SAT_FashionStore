@@ -1,0 +1,3 @@
+dress, violet
+hat, pink
+shoes, black

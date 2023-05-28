@@ -1,0 +1,4 @@
+tshirt, white
+pants, black
+sandals, black
+socks, white

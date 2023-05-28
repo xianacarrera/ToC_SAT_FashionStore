@@ -1,0 +1,3 @@
+dress, white
+shoes, black
+socks, black

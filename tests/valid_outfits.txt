@@ -1,0 +1,4 @@
+tshirt, white
+skirt, pink
+socks, pink
+shoes, pink

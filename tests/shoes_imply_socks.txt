@@ -1,0 +1,3 @@
+tshirt, white
+pants, black
+shoes, black

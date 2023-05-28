@@ -1,0 +1,3 @@
+tshirt, red
+pants, red
+sandals, red
