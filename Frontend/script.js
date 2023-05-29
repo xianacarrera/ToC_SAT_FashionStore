@@ -264,11 +264,69 @@ function writeTxt() {
         console.log(data);  // Modifica questa riga per loggare i dati
         msg = JSON.parse(data)
         console.log(msg.message)
+
+        res = ""
+        if(msg.message === "UNSATISFIABLE"){
+            myAllerSUPERPOWER("the combination of clothes is not good");
+            remove_shop()
+        }else{
+            myAllerSUPERPOWER("the combination you chose is fine: \n" + content)
+        }
+
         console.log('Write File Stonks');
     })
     .catch(error => {
         console.error(error);
     });
+}
+
+function myAllerSUPERPOWER(msg) {
+    console.log(msg)
+    let overlay = document.createElement('div');
+
+    overlay.style.position = 'fixed';
+    overlay.style.left = '0';
+    overlay.style.top = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = '999';
+
+    let alertBox = document.createElement('div');
+
+    alertBox.style.position = 'fixed';
+    alertBox.style.left = '50%';
+    alertBox.style.top = '50%';
+    alertBox.style.transform = 'translate(-50%, -50%)';
+    alertBox.style.padding = '20px';
+    alertBox.style.backgroundColor = '#ffffff';
+    alertBox.style.color = 'black';
+    alertBox.style.borderRadius = '5px';
+    alertBox.style.zIndex = '1000';
+    alertBox.style.width = '400px';
+    alertBox.style.padding = '20px';
+    alertBox.style.height = '200px';
+    alertBox.innerHTML = msg.replace(/\n/g, '<br>');
+
+
+
+    var svgSpan = document.createElement("span");
+    svgSpan.innerHTML = '<svg style="color: rgb(221, 170, 152); position: absolute; top: 0; right: 0;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16"> <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" fill="#ddaa98"></path> </svg>';
+    svgSpan.style = "cursor: pointer;"
+    svgSpan.addEventListener("click", (function (alertBox,overlay,svgSpan ) {
+        return function () {
+            document.body.removeChild(overlay);
+            document.body.removeChild(alertBox);
+        };
+    })(alertBox, overlay, svgSpan));
+
+
+    document.body.appendChild(overlay);
+    alertBox.appendChild(svgSpan);
+    
+    document.body.appendChild(alertBox);
+
+    
 }
 
 

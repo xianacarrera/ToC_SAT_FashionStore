@@ -29,8 +29,8 @@ def write_file():
         with open('file.txt', 'w') as file:
             file.truncate(0)
             file.write(content)
-        solution = main.run()
-        # solution = check_validity("file.txt")
+        # solution = main.run()
+        solution = check_validity("file.txt")
         return jsonify({'message': solution}), 200
     
 

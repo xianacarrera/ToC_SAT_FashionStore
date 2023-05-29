@@ -1,4 +1,0 @@
-hat, red
-dress, black
-shoes, black
-socks, black
