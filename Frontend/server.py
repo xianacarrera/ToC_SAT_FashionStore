@@ -6,6 +6,21 @@ import main
 
 app = Flask(__name__)
 
+def check_validity(file_path):
+    file_path = file_path
+    garments, colors = main.read_input_from_file(file_path)
+    solution = main.encode_fashion_store_problem(garments, colors)
+
+    print("\n\n")
+    if solution:
+        print("SATISFIABLE:")
+        for garment, color in zip(garments, colors):
+            print(f"Garment: {garment}, Color: {color}")
+        return ("SATISFIABLE")
+    else:
+        print("UNSATISFIABLE")
+        return ("UNSATISFIABLE")
+    
 @app.route('/writefile', methods=['POST'])
 def write_file():
     content = request.json['content']
@@ -14,7 +29,8 @@ def write_file():
         with open('file.txt', 'w') as file:
             file.truncate(0)
             file.write(content)
-        solution = main.check_validity('file.txt')
+        solution = main.run()
+        # solution = check_validity("file.txt")
         return jsonify({'message': solution}), 200
     
 
